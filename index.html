@@ -17,7 +17,7 @@
   <!-- Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;500;600&display=swap" rel="stylesheet" />
 
   <style>
     :root {
@@ -33,6 +33,7 @@
       --radius-lg: 22px;
       --radius-md: 14px;
       --ease: cubic-bezier(.22, 1, .36, 1);
+      --gold-grad: linear-gradient(120deg, #A8987C 0%, #E9DEC7 45%, #C8BBA3 60%, #9C8C70 100%);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -173,21 +174,56 @@
     .portrait .photo.is-empty img { display: none; }
 
     .name {
-      font-family: "Montserrat", sans-serif;
-      font-weight: 500;
-      font-size: clamp(1.7rem, 7vw, 2rem);
-      line-height: 1.15;
-      letter-spacing: -0.01em;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(2.2rem, 9.5vw, 2.6rem);
+      line-height: 1.02;
+      letter-spacing: .005em;
+      background: linear-gradient(180deg, #FBF8F2 0%, #E4DCCD 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
     .name .prefix {
       display: block;
-      font-weight: 300;
-      font-size: .95rem;
-      letter-spacing: .04em;
-      color: var(--champagne);
-      margin-bottom: 6px;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 1.15rem;
+      letter-spacing: .06em;
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 2px;
     }
+
+    /* Rótulo de seção com filetes */
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      font-family: "Montserrat", sans-serif;
+      font-size: .66rem;
+      font-weight: 500;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--stone-400);
+    }
+    .eyebrow::before, .eyebrow::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200,187,163,.35));
+    }
+    .eyebrow::after { background: linear-gradient(270deg, transparent, rgba(200,187,163,.35)); }
+    .eyebrow .dot {
+      width: 4px; height: 4px; transform: rotate(45deg);
+      background: var(--champagne); opacity: .7; flex: none;
+    }
+    .identity .eyebrow { margin-top: 26px; }
+    .actions .eyebrow { margin-bottom: 6px; }
 
     .role {
       margin-top: 10px;
@@ -409,12 +445,140 @@
       color: var(--graphite-600);
     }
 
+    /* ---------- Refinamentos ---------- */
+
+    /* Luz ambiente suave que respira ao fundo */
+    body::after {
+      content: "";
+      position: fixed;
+      left: 50%; top: -12vh;
+      width: 140vmax; height: 70vmax;
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: -1;
+      background: radial-gradient(closest-side, rgba(200,187,163,.09), transparent 70%);
+      animation: breathe 9s ease-in-out infinite alternate;
+    }
+    @keyframes breathe { from { opacity: .55; } to { opacity: 1; } }
+
+    /* Segundo anel, tracejado, girando devagar */
+    .portrait .orbit {
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      border: 1px dashed rgba(200,187,163,.22);
+      animation: spin 60s linear infinite;
+      pointer-events: none;
+    }
+    .portrait .orbit::after {
+      content: "";
+      position: absolute;
+      top: -3px; left: 50%;
+      width: 6px; height: 6px;
+      margin-left: -3px;
+      transform: rotate(45deg);
+      background: var(--champagne);
+      box-shadow: 0 0 10px rgba(200,187,163,.8);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .portrait .photo { box-shadow: 0 0 0 4px rgba(22,23,26,.9), 0 22px 50px -18px rgba(0,0,0,.9); }
+
+    /* Brilho que acompanha o cursor nos botões */
+    .btn { position: relative; overflow: hidden; isolation: isolate; }
+    .btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      opacity: 0;
+      background: radial-gradient(180px circle at var(--mx, 50%) var(--my, 50%), rgba(200,187,163,.12), transparent 70%);
+      transition: opacity .35s var(--ease);
+    }
+    @media (hover: hover) { .btn:hover::before { opacity: 1; } }
+
+    /* Reflexo que atravessa o botão principal */
+    .btn.primary {
+      background: linear-gradient(180deg, #F6F3EE, #E6E1D8);
+      box-shadow: 0 18px 36px -20px rgba(200,187,163,.7), inset 0 1px 0 rgba(255,255,255,.9);
+    }
+    .btn.primary::before { display: none; }
+    .btn.primary::after {
+      content: "";
+      position: absolute;
+      top: 0; bottom: 0;
+      left: -60%;
+      width: 40%;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,.75), transparent);
+      transform: skewX(-18deg);
+      animation: sheen 5.5s var(--ease) 2.6s infinite;
+      pointer-events: none;
+    }
+    @keyframes sheen { 0% { left: -60%; } 22%, 100% { left: 130%; } }
+    .btn.primary .icon { box-shadow: inset 0 0 0 1px rgba(200,187,163,.35); }
+
+    /* Linha de utilitários: 3 botões compactos */
+    .utility { grid-template-columns: repeat(3, 1fr); }
+    .btn.small {
+      flex-direction: column;
+      gap: 7px;
+      padding: 14px 6px 12px;
+      font-size: .78rem;
+      letter-spacing: .01em;
+      text-align: center;
+    }
+    .btn.small .ico { font-size: 1.15rem; }
+
+    /* QR com cantoneiras */
+    .qr-box { position: relative; }
+    .qr-frame {
+      position: relative;
+      flex: none;
+      padding: 8px;
+    }
+    .qr-frame i {
+      position: absolute;
+      width: 14px; height: 14px;
+      border: 1.5px solid var(--champagne);
+      opacity: .75;
+    }
+    .qr-frame i:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 6px; }
+    .qr-frame i:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 6px; }
+    .qr-frame i:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 6px; }
+    .qr-frame i:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 6px; }
+    .qr h2 {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-weight: 600;
+      font-size: 1.35rem;
+      letter-spacing: .01em;
+    }
+
+    /* Rodapé com monograma */
+    footer { color: var(--stone-400); opacity: .55; letter-spacing: .04em; }
+    .seal {
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      margin: 34px 0 0;
+      color: var(--champagne);
+    }
+    .seal::before, .seal::after {
+      content: ""; width: 56px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200,187,163,.4));
+    }
+    .seal::after { transform: scaleX(-1); }
+    .seal span {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      letter-spacing: .12em;
+      opacity: .85;
+    }
+
     /* Toast */
     .toast {
       position: fixed;
       left: 50%;
       bottom: calc(24px + env(safe-area-inset-bottom));
       transform: translate(-50%, 20px);
+      z-index: 30;
       background: var(--offwhite);
       color: var(--graphite-900);
       font-size: .85rem;
@@ -441,7 +605,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .js [data-reveal] { opacity: 1 !important; }
-      * { transition: none !important; }
+      * { transition: none !important; animation: none !important; }
     }
   </style>
 </head>
@@ -451,6 +615,7 @@
     <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><g transform="translate(7.3 7.3) scale(.39)" stroke-width="4.4"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></g></symbol>
     <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></symbol>
     <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
     <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
     <symbol id="i-contact" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></symbol>
     <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M16 6l-4-4-4 4M12 2v13"/></symbol>
@@ -467,6 +632,7 @@
       <div class="glow" aria-hidden="true"></div>
       <canvas id="scale3d" aria-hidden="true"></canvas>
       <div class="portrait" data-reveal="photo">
+        <span class="orbit" aria-hidden="true"></span>
         <svg class="ring" viewBox="0 0 172 172" aria-hidden="true">
           <circle cx="86" cy="86" r="85" />
         </svg>
@@ -488,6 +654,8 @@
         Advogado
         <span class="oab">OAB-RJ 271.901</span>
       </p>
+
+      <p class="eyebrow" data-reveal><span class="dot"></span>Áreas de atuação<span class="dot"></span></p>
 
       <ul class="areas" aria-label="Áreas de atuação">
         <li data-reveal="tag">
@@ -514,13 +682,14 @@
 
     <!-- Ações -->
     <nav class="actions" aria-label="Contatos">
+      <p class="eyebrow" data-reveal="btn"><span class="dot"></span>Contato<span class="dot"></span></p>
       <a class="btn primary" data-reveal="btn"
-         href="https://wa.me/5521970444391?text=Ol%C3%A1%2C%20Dr.%20Alerson.%20Gostaria%20de%20agendar%20um%20atendimento."
+         href="https://wa.me/5521984722330?text=Ol%C3%A1%2C%20Dr.%20Alerson.%20Gostaria%20de%20agendar%20um%20atendimento."
          target="_blank" rel="noopener">
         <span class="icon"><svg class="ico" aria-hidden="true"><use href="#i-whatsapp"/></svg></span>
         <span class="text">
           <span class="label">Conversar no WhatsApp</span>
-          <span class="hint">(21) 97044-4391</span>
+          <span class="hint">(21) 98472-2330</span>
         </span>
         <svg class="ico chev" aria-hidden="true"><use href="#i-chevron"/></svg>
       </a>
@@ -548,6 +717,9 @@
       </a>
 
       <div class="utility">
+        <a class="btn small" href="tel:+5521984722330" data-reveal="btn">
+          <svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg> Ligar
+        </a>
         <button class="btn small" type="button" id="saveContact" data-reveal="btn">
           <svg class="ico" aria-hidden="true"><use href="#i-contact"/></svg> Salvar contato
         </button>
@@ -559,12 +731,16 @@
 
     <!-- QR Code -->
     <section class="qr" data-reveal="qr" aria-labelledby="qr-title">
-      <div class="qr-box" id="qrcode" role="img" aria-label="QR Code deste cartão"></div>
+      <div class="qr-frame"><i></i><i></i><i></i><i></i>
+        <div class="qr-box" id="qrcode" role="img" aria-label="QR Code deste cartão"></div>
+      </div>
       <div>
         <h2 id="qr-title">Aponte a câmera</h2>
         <p>Mostre este código para quem quiser abrir o cartão direto no celular.</p>
       </div>
     </section>
+
+    <div class="seal" data-reveal aria-hidden="true"><span>AR</span></div>
 
     <footer data-reveal>
       © <span id="year"></span> Alerson Ribeiro · Advocacia
@@ -615,7 +791,7 @@
           'N:Ribeiro;Alerson;;Dr.;',
           'FN:Dr. Alerson Ribeiro',
           'TITLE:Advogado · OAB-RJ 271.901',
-          'TEL;TYPE=CELL:+5521970444391',
+          'TEL;TYPE=CELL:+5521984722330',
           'URL:' + PAGE_URL,
           'X-SOCIALPROFILE;TYPE=instagram:https://instagram.com/Dr.alersonribeiro',
           'X-SOCIALPROFILE;TYPE=linkedin:https://www.linkedin.com/in/alerson-ribeiro-8268b228b',
@@ -697,6 +873,15 @@
           wiggle(tag);
           showDetail(tag.dataset.detail);
           scaleApi && scaleApi.nudge(tag);
+        });
+      });
+
+      /* ---------- Brilho que segue o cursor ---------- */
+      document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('pointermove', e => {
+          const r = btn.getBoundingClientRect();
+          btn.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+          btn.style.setProperty('--my', (e.clientY - r.top) + 'px');
         });
       });
 
@@ -948,7 +1133,7 @@
         delay: anime.stagger(90)
       }, 950)
       .add({
-        targets: '[data-reveal="qr"], footer[data-reveal]',
+        targets: '[data-reveal="qr"], .seal[data-reveal], footer[data-reveal]',
         opacity: [0, 1],
         translateY: [18, 0],
         duration: 900,
